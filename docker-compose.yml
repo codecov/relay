@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  gateway:
+    image: ${GATEWAY_DOCKER_REPO}:${GATEWAY_DOCKER_VERSION}
+    environment:
+
+    ports:
+      - "8080:8080"
+      - "8404:8404"
+      #- "8443:8443"

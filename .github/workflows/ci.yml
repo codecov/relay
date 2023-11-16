@@ -1,0 +1,29 @@
+name: Relay CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+
+jobs:
+  build:
+    name: Build
+    uses: codecov/gha-workflows/.github/workflows/self-hosted.yml@v1.2.7
+    secrets: inherit
+    with:
+      repo: ${{ vars.CODECOV_RELAY_IMAGE || 'codecov/relay' }}
+      cache_requirements: false
+
+  push:
+    name: Push
+    needs: [ build ]
+    secrets: inherit
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main') && github.repository_owner == 'codecov' }}
+    uses: codecov/gha-workflows/.github/workflows/self-hosted.yml@v1.2.7
+    with:
+      push_rolling: true
+      cache_requirements: false
+      repo: ${{ vars.CODECOV_RELAY_IMAGE || 'codecov/relay' }}
+
