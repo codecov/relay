@@ -13,6 +13,8 @@ shell:
 	RELAY_DOCKER_REPO=${AR_REPO} RELAY_DOCKER_VERSION=${VERSION} docker-compose exec relay sh
 up:
 	RELAY_DOCKER_REPO=${AR_REPO} RELAY_DOCKER_VERSION=${VERSION} docker-compose up -d
+logs:
+	RELAY_DOCKER_REPO=${AR_REPO} RELAY_DOCKER_VERSION=${VERSION} docker-compose logs
 
 refresh:
 	$(MAKE) build

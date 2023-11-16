@@ -1,16 +1,27 @@
 # relay
 
+## Usage
+
+### Simple
+Deploy and configure with the `RELAY_HOST` set to the host you want to send traffic to. Codecov will send your traffic to this relay via split DNS (most likely).
+
+### Bidirectional
+Configure `CODECOV_RELAY_ENABLED` and `CODECOV_HOST`. The relay will then send Codecov traffic as well. This is useful for when you want to use the relay to route traffic to a self hosted or Dedicated instance of Codecov. You will likely need to send Codecov traffic to the relay via split DNS.
+
+Please contact your Codecov representative for more information.
 
 ## Configuration
 
 * Note the only required configuration is `RELAY_HOST`. This must be set for proper operation.
 
-| Environment Variable          | Default    | Description                                                                                                       | Required |
-|-------------------------------|------------|-------------------------------------------------------------------------------------------------------------------|----------|
-| CODECOV_BIND_PORT             | 8000       | IP that the relay binds to listen and forward traffic to Codecov                                                  | false    |
-| RELAY_BIND_PORT               | 8080       | IP that the relay binds to listen and forward traffic to internal services                                        | false    |
-| CODECOV_HOST                  | codecov.io | Codecov host to forward traffic to. Typically you will want to change this.                                       | false    |
-| RELAY_HOST                    | null       | Host to forward relay traffic to. This is usually your code host or some other gateway.                           | true     |
-| RELAY_PORT                    | 443        | Port to forward relay traffic on                                                                                  | false    |
-| CODECOV_RELAY_DISABLED        | null       | When set, will disable the Codecov side of the relay. This is used when you only need one way usage of the relay. | false    |
-| CODECOV_RELAY_CHROOT_DISABLED | null       | When set, will disable chroot on haproxy. This is used when your container env cannot support chroot.             | false    |
+| Environment Variable  | Default    | Description                                                                                            | Required |
+|-----------------------|------------|--------------------------------------------------------------------------------------------------------|----------|
+| CODECOV_BIND_PORT     | 8000       | IP that the relay binds to listen and forward traffic to Codecov                                       | false    |
+| RELAY_BIND_PORT       | 8080       | IP that the relay binds to listen and forward traffic to internal services                             | false    |
+| CODECOV_HOST          | codecov.io | Codecov host to forward traffic to. Typically you will want to change this.                            | false    |
+| CODECOV_PORT          | 443        | Port to forward Codecov traffic on. This should be 443 in most cases.                                  | false    |
+| RELAY_HOST            | null       | Host to forward relay traffic to. This is usually your code host or some other gateway.                | true     |
+| RELAY_PORT            | 443        | Port to forward relay traffic on                                                                       | false    |
+| CODECOV_RELAY_ENABLED | null       | When set, will enable the Codecov side of the relay. This is used when you need bidirectional routing. | false    |
+| CHROOT_DISABLED       | null       | When set, will disable chroot on haproxy. This is used when your container env cannot support chroot.  | false    |
+| HEALTH_CHECK_PORT     | 8100       | Port to respond to the health check on                                                                 | false    |

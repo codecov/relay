@@ -7,7 +7,7 @@ _preflight() {
     echo "RELAY_HOST is not set. Please set RELAY_HOST to the hostname of the relay"
     exit 1
   fi
-
+  echo 'Preflight success.'
 }
 
 _codecov_preflight() {
@@ -54,18 +54,19 @@ _relay_preflight() {
 _start_haproxy() {
   export DOLLAR='$'
   BASE_CONF="-f /etc/haproxy/0-haproxy.conf -f /etc/haproxy/1-defaults.conf"
-  CODECOV_RELAY="-f /etc/haproxy/3-codecov-relay.conf"
+  CODECOV_RELAY=""
   RELAY="-f /etc/haproxy/2-relay.conf"
-  if [ "$CODECOV_RELAY_DISABLED" ]; then
+  if [ "$CODECOV_RELAY_ENABLED" ]; then
     echo 'Codecov relay disabled'
-    CODECOV_RELAY=""
-  else
+    CODECOV_RELAY="-f /etc/haproxy/3-codecov-relay.conf"
     envsubst < /etc/haproxy/3-codecov-relay.conf.template > /etc/haproxy/3-codecov-relay.conf
   fi
-  envsubst < /etc/haproxy/2-relay.conf.template > /etc/haproxy/2-relay.conf
 
-  if [ "$CODECOV_RELAY_CHROOT_DISABLED" ]; then
-    echo 'Codecov gateway chroot disabled'
+  envsubst < /etc/haproxy/2-relay.conf.template > /etc/haproxy/2-relay.conf
+  envsubst < /etc/haproxy/1-defaults.conf.template > /etc/haproxy/1-defaults.conf
+
+  if [ "$CHROOT_DISABLED" ]; then
+    echo 'Chroot disabled'
     envsubst < /etc/haproxy/0-haproxy-no-chroot.conf.template > /etc/haproxy/0-haproxy.conf
   else
     envsubst < /etc/haproxy/0-haproxy.conf.template > /etc/haproxy/0-haproxy.conf
@@ -79,7 +80,7 @@ if [ -z "$1" ];
 then
   _preflight
   _relay_preflight
-  if [ -z "$CODECOV_RELAY_DISABLED" ]; then
+  if [ "$CODECOV_RELAY_ENABLED" ]; then
      _codecov_preflight
   fi
   _start_haproxy

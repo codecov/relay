@@ -14,7 +14,12 @@ ARG COMMIT_SHA
 ARG VERSION
 ENV BUILD_ID $COMMIT_SHA
 ENV BUILD_VERSION $VERSION
-
+ENV RELAY_PORT 443
+ENV CODECOV_BIND_PORT 8000
+ENV RELAY_BIND_PORT 8080
+ENV CODECOV_HOST "codecov.io"
+ENV CODECOV_PORT 443
+ENV HEALTH_CHECK_PORT 8100
 RUN chown -R haproxy:haproxy /var/lib/haproxy && mkdir -p /run && chown -R haproxy:haproxy /etc/haproxy && chown -R haproxy:haproxy /run
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
