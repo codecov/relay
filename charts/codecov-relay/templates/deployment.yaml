@@ -1,0 +1,109 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+  {{- range $key, $val := .Values.global.annotations }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  {{- range $key, $val := .Values.deployment.annotations }}
+    {{ $key }}: {{ $val | quote }}
+  {{- end }}
+  labels:
+    app: {{ .Release.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    {{- range $key, $value := .Values.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app: {{ .Release.Name }}
+      annotations:
+      {{- range $key, $val := .Values.global.annotations }}
+        {{ $key }}: {{ $val | quote }}
+      {{- end }}
+      {{- range $key, $val := .Values.deployment.annotations }}
+        {{ $key }}: {{ $val | quote }}
+      {{- end }}
+    spec:
+    {{- with .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ .Values.image }}:{{ .Values.version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RELAY_HOST
+              value: {{ required "A valid relay.host value is required" .Values.relay.host | quote }}
+            - name: RELAY_PORT
+              value: {{ required "A valid relay.port value is required" .Values.relay.port | quote }}
+            - name: RELAY_BIND_PORT
+              value: {{ required "A valid relay.bind_port value is required" .Values.relay.bind_port | quote }}
+            {{- if .Values.codecov_relay.enabled }}
+            - name: CODECOV_HOST
+              value: {{ required "A valid codecov_relay.host value is required" .Values.codecov_relay.host | quote }}
+            - name: CODECOV_BIND_PORT
+              value: {{ required "A valid codecov_relay.bind_port value is required" .Values.codecov_relay.bind_port | quote }}
+            - name: CODECOV_PORT
+              value: {{ required "A valid codecov_relay.port value is required" .Values.codecov_relay.port | quote }}
+            {{- end }}
+            {{- with .Values.extraEnvs }}
+{{ toYaml . | nindent 8 }}
+            {{- end }}
+            {{- with .Values.envFrom }}
+          envFrom:
+{{ toYaml . | indent 8 }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.health_port  }}
+            initialDelaySeconds: {{ .Values.initialDelaySeconds }}
+            periodSeconds: 5
+            failureThreshold: 3
+          resources:
+{{ toYaml .Values.deployment.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.relay.bind_port }}
+              name: relay
+            - containerPort: {{ .Values.health_port }}
+              name: health
+            {{- if .Values.codecov_relay.enabled }}
+            - containerPort: {{ .Values.codecov_relay.bind_port }}
+              name: codecov-relay
+            {{- end }}

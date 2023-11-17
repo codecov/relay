@@ -1,0 +1,8 @@
+apiVersion: v2
+name: codecov-relay
+description: A Helm charts for installing the Codecov Relay
+type: application
+version: 0.0.1
+maintainers:
+  - name: trent-codecov
+    email: trent@codecov.io

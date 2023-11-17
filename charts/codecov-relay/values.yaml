@@ -1,0 +1,67 @@
+replicaCount: 1
+serviceAccountName: default
+initialDelaySeconds: 15
+minAvailable: 1
+pdb_enabled: false
+image: codecov/relay
+version: 23.11.16
+health_port: 8100
+global:
+  annotations:
+    vendor: codecov
+deployment:
+  annotations: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256M
+
+service:
+  annotations: {}
+  type: NodePort
+
+relay:
+  bind_port: 8080
+  service_port: 8080
+  port: 443
+  # host: required
+codecov_relay:
+  enabled: false
+  bind_port: 8000
+  service_port: 8000
+  port: 443
+  host: codecov.io
+
+imagePullSecrets: []
+imagePullPolicy: "IfNotPresent"
+podSecurityContext: {}
+
+securityContext: {}
+# Allows you to load extra env vars from secrets or k/v pairs
+extraEnvs: []
+#  - name: "SERVICES__DATABASE_URL"
+#    valueFrom:
+#      secretKeyRef:
+#        name: codecov-database-url
+#        key: url
+#  - name: "SERVICES__REDIS_URL"
+#    valueFrom:
+#      secretKeyRef:
+#        name: codecov-redis-url
+#        key: url
+#  - name: STATSD_HOST
+#    value: statsd
+#  - name: STATSD_PORT
+#    value: "8125"
+
+# Allows you to load environment variables from kubernetes secret or config map
+envFrom: []
+# - secretRef:
+#     name: env-secret
+# - configMapRef:
+#     name: config-map
+
+labels: {}

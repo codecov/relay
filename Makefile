@@ -55,3 +55,9 @@ push.self-hosted-release:
 	docker push ${DOCKERHUB_REPO}:${release_version}
 	docker push ${DOCKERHUB_REPO}:latest-stable
 	docker push ${DOCKERHUB_REPO}:latest-calver
+
+helm.template: # Used to template helm
+	@helm template --set relay.host=github.com codecov-relay-test --namespace codecov ./charts/codecov-relay --debug > template-chart.yaml
+
+helm.lint: # Used to lint helm
+	@ct lint --target-branch main --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml

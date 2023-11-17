@@ -1,4 +1,9 @@
-# relay
+# Codecov Relay
+
+## Purpose
+Provide a relay for Codecov traffic. Meant to serve as a bridge between your code host and Codecov. This is designed to run in a container and can be deployed via Kubernetes/Helm.
+
+Run the relay at the edge of your network to allow Codecov to send traffic to your internal network. This is useful for when you want to use Codecov but do not want to directly expose a service on your internal network to the internet.
 
 ## Usage
 
@@ -25,3 +30,16 @@ Please contact your Codecov representative for more information.
 | CODECOV_RELAY_ENABLED | null       | When set, will enable the Codecov side of the relay. This is used when you need bidirectional routing. | false    |
 | CHROOT_DISABLED       | null       | When set, will disable chroot on haproxy. This is used when your container env cannot support chroot.  | false    |
 | HEALTH_CHECK_PORT     | 8100       | Port to respond to the health check on                                                                 | false    |
+
+
+## Installation
+
+```shell
+helm install codecov-relay ./charts/codecov-relay
+```
+
+## Upgrade
+
+```shell
+helm upgrade codecov-relay ./charts/codecov-relay
+```

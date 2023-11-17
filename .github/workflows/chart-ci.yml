@@ -1,0 +1,22 @@
+name: Chart CI
+
+on:
+  pull_request:
+    paths:
+      - charts/**
+
+
+jobs:
+  lint-dashboard-chart:
+    container:
+      image: quay.io/helmpack/chart-testing:v3.10.1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # ct needs history to compare
+          fetch-depth: 0
+
+      - name: Lint Dashboard Chart
+        run: ct lint --target-branch main --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml
