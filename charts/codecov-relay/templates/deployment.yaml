@@ -66,7 +66,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}
           image: {{ .Values.image }}:{{ .Values.version }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           env:
             - name: RELAY_HOST
               value: {{ required "A valid relay.host value is required" .Values.relay.host | quote }}
