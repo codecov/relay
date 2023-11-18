@@ -21,9 +21,9 @@ refresh:
 	$(MAKE) up
 
 build:
-	make build.self-hosted
+	make build.app
 
-build.self-hosted:
+build.app:
 	docker build . -t ${AR_REPO}:${VERSION} -t ${AR_REPO}:${release_version}-latest -t ${DOCKERHUB_REPO}:rolling \
 		--label "org.label-schema.build-date"="$(build_date)" \
 		--label "org.label-schema.name"="Relay" \
@@ -33,28 +33,37 @@ build.self-hosted:
 		--build-arg COMMIT_SHA="${sha}" \
 		--build-arg VERSION="${release_version}"
 
+save.app:
+	docker save -o app.tar ${AR_REPO}:${VERSION}
 
-tag.self-hosted-rolling:
+tag.rolling:
 	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:rolling
 
-save.self-hosted:
-	docker save -o self-hosted.tar ${AR_REPO}:${VERSION}
-
-load.self-hosted:
-	docker load --input self-hosted.tar
-
-push.self-hosted-rolling:
+push.rolling:
 	docker push ${DOCKERHUB_REPO}:rolling
 
-tag.self-hosted-release:
+tag.release:
 	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:${release_version}
 	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:latest-stable
 	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:latest-calver
 
-push.self-hosted-release:
+push.release:
 	docker push ${DOCKERHUB_REPO}:${release_version}
 	docker push ${DOCKERHUB_REPO}:latest-stable
 	docker push ${DOCKERHUB_REPO}:latest-calver
+
+tag.production:
+	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:production-latest
+
+push.production:
+	docker push ${AR_REPO}:production-${VERSION}
+
+tag.latest:
+	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:latest
+
+push.latest:
+	docker push ${AR_REPO}:latest
+
 
 helm.template: # Used to template helm
 	@helm template --set relay.host=github.com codecov-relay-test --namespace codecov ./charts/codecov-relay --debug > template-chart.yaml
