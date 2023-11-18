@@ -1,5 +1,6 @@
 # Codecov Relay
-
+[![CI](https://github.com/codecov/relay/actions/workflows/ci.yml/badge.svg)](https://github.com/codecov/relay/actions/workflows/ci.yml)
+[![Chart CI](https://github.com/codecov/relay/actions/workflows/chart-ci.yml/badge.svg)](https://github.com/codecov/relay/actions/workflows/chart-ci.yml)
 ## Purpose
 Provide a relay for Codecov traffic. Meant to serve as a bridge between your code host and Codecov. This is designed to run in a container and can be deployed via Kubernetes/Helm.
 
@@ -34,12 +35,19 @@ Please contact your Codecov representative for more information.
 
 ## Installation
 
+Install the Codecov Helm Repo
 ```shell
-helm install codecov-relay ./charts/codecov-relay
+helm repo add codecov https://helm.codecov.io
+helm repo update
 ```
 
-## Upgrade
+### Install
+```shell
+helm install --set relay.host=YOURHOST codecov-relay codecov/codecov-relay
+```
+
+### Upgrade
 
 ```shell
-helm upgrade codecov-relay ./charts/codecov-relay
+helm upgrade --reuse-values codecov-relay codecov/codecov-relay
 ```
