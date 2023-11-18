@@ -28,5 +28,6 @@ jobs:
     with:
       environment: production
       push_rolling: true
+      create_sentry_release: false
       repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
 
