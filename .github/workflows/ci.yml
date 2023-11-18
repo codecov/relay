@@ -27,7 +27,18 @@ jobs:
     uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.10
     with:
       environment: production
-      push_rolling: true
       create_sentry_release: false
       repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
 
+
+  push-rolling:
+    name: Push
+    needs: [ build ]
+    secrets: inherit
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main') && github.repository_owner == 'codecov' }}
+    uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.10
+    with:
+      environment: production
+      push_rolling: true
+      create_sentry_release: false
+      repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
