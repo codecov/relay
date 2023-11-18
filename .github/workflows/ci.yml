@@ -25,6 +25,5 @@ jobs:
     with:
       environment: production
       push_rolling: true
-      cache_requirements: false
       repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
 
