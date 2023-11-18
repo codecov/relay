@@ -9,11 +9,11 @@ on:
 
 jobs:
   build:
-    name: Build
-    uses: codecov/gha-workflows/.github/workflows/self-hosted.yml@v1.2.7
+    name: Build Relay
+    uses: codecov/gha-workflows/.github/workflows/build-app.yml@v1.2.9
     secrets: inherit
     with:
-      repo: ${{ vars.CODECOV_RELAY_IMAGE || 'codecov/relay' }}
+      repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
       cache_requirements: false
 
   push:
@@ -21,9 +21,10 @@ jobs:
     needs: [ build ]
     secrets: inherit
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main') && github.repository_owner == 'codecov' }}
-    uses: codecov/gha-workflows/.github/workflows/self-hosted.yml@v1.2.7
+    uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.9
     with:
+      environment: production
       push_rolling: true
       cache_requirements: false
-      repo: ${{ vars.CODECOV_RELAY_IMAGE || 'codecov/relay' }}
+      repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
 
