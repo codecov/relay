@@ -53,13 +53,15 @@ push.release:
 	docker push ${DOCKERHUB_REPO}:latest-calver
 
 tag.production:
-	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:production-latest
+	docker tag ${AR_REPO}:${VERSION} ${AR_REPO}:production-${VERSION}
+	docker tag ${AR_REPO}:${VERSION} ${AR_REPO}:production-latest
 
 push.production:
 	docker push ${AR_REPO}:production-${VERSION}
+	docker push ${AR_REPO}:production-latest
 
 tag.latest:
-	docker tag ${AR_REPO}:${VERSION} ${DOCKERHUB_REPO}:latest
+	docker tag ${AR_REPO}:${VERSION} ${AR_REPO}:latest
 
 push.latest:
 	docker push ${AR_REPO}:latest
