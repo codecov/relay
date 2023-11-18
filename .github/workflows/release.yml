@@ -33,6 +33,7 @@ jobs:
     if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.repository_owner == 'codecov' }}
     uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.9
     with:
+      environment: production
       push_release: true
       cache_requirements: false
       repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
