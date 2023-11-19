@@ -14,13 +14,13 @@ jobs:
   create-release:
     name: Tag Release ${{ github.head_ref }} and Push Docker image to Docker Hub
     if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.repository_owner == 'codecov' }}
-    uses: codecov/gha-workflows/.github/workflows/create-release.yml@v1.2.10
+    uses: codecov/gha-workflows/.github/workflows/create-release.yml@v1.2.11
     secrets: inherit
 
   build:
     name: Build Relay
     if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.repository_owner == 'codecov' }}
-    uses: codecov/gha-workflows/.github/workflows/build-app.yml@v1.2.10
+    uses: codecov/gha-workflows/.github/workflows/build-app.yml@v1.2.11
     secrets: inherit
     with:
       repo: ${{ vars.CODECOV_INTERNAL_RELAY_IMAGE || 'codecov/relay' }}
@@ -31,7 +31,7 @@ jobs:
     needs: [ build ]
     secrets: inherit
     if: ${{ github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.repository_owner == 'codecov' }}
-    uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.10
+    uses: codecov/gha-workflows/.github/workflows/push-env.yml@v1.2.11
     with:
       environment: production
       push_release: true
