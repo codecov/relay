@@ -57,7 +57,6 @@ _start_haproxy() {
   CODECOV_RELAY=""
   RELAY="-f /etc/haproxy/2-relay.conf"
   if [ "$CODECOV_RELAY_ENABLED" ]; then
-    echo 'Codecov relay disabled'
     CODECOV_RELAY="-f /etc/haproxy/3-codecov-relay.conf"
     envsubst < /etc/haproxy/3-codecov-relay.conf.template > /etc/haproxy/3-codecov-relay.conf
   fi
