@@ -75,6 +75,8 @@ spec:
             - name: RELAY_BIND_PORT
               value: {{ required "A valid relay.bind_port value is required" .Values.relay.bind_port | quote }}
             {{- if .Values.codecov_relay.enabled }}
+            - name: CODECOV_RELAY_ENABLED
+              value: "true"
             - name: CODECOV_HOST
               value: {{ required "A valid codecov_relay.host value is required" .Values.codecov_relay.host | quote }}
             - name: CODECOV_BIND_PORT
